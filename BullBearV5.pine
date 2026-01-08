@@ -1,0 +1,230 @@
+//@version=6
+// ======================================================
+// BullBearv1
+// Estrategia basada en Zero-Lag EMA + Bandas de Volatilidad
+// Incluye presets, señales BUY/SELL y 4 EMAs configurables
+// ======================================================
+
+// ----------------------------
+// CONFIGURACIÓN GENERAL
+// ----------------------------
+
+// Definición de la estrategia
+strategy(
+    "BullBearv1",
+    shorttitle="BullBearv1",
+    overlay=true
+)
+
+// ----------------------------
+// PRESETS
+// ----------------------------
+
+// Selector de configuración predefinida
+presetMode = input.string(
+    "Custom",
+    "Preset Configuration",
+    options=["Custom", "NVDA 15M", "EURUSD 4H"],
+    group="⚙️ Presets",
+    tooltip="Selecciona una configuración predefinida o usa Custom para ajustes manuales"
+)
+
+// ----------------------------
+// ZERO LAG SETTINGS
+// ----------------------------
+
+// Longitud base del Zero-Lag EMA
+zlLengthInput = input.int(
+    70,
+    "Zero Lag Length",
+    group="Zero Lag Settings",
+    tooltip="Ventana de cálculo para Zero-Lag EMA (se sobreescribe si usas un preset)"
+)
+
+// Multiplicador de volatilidad para las bandas
+zlMultInput = input.float(
+    1.2,
+    "Band Multiplier",
+    group="Zero Lag Settings",
+    tooltip="Controla el grosor de las bandas (se sobreescribe si usas un preset)"
+)
+
+// Aplicación de presets
+zlLength = presetMode == "NVDA 15M" ? 14 :
+           presetMode == "EURUSD 4H" ? 27 :
+           zlLengthInput
+
+zlMult = presetMode == "NVDA 15M" ? 1.25 :
+         presetMode == "EURUSD 4H" ? 0.7 :
+         zlMultInput
+
+// ----------------------------
+// VISUALIZACIÓN ZERO LAG
+// ----------------------------
+
+// Mostrar u ocultar Zero Lag Bands
+showZL = input.bool(true, "Mostrar Zero Lag Bands", group="Visualización Zero Lag")
+
+// Colores de tendencia
+bullColor = input.color(#00ffbb, "Color Alcista", group="Visualización Zero Lag")
+bearColor = input.color(color.rgb(213, 3, 255), "Color Bajista", group="Visualización Zero Lag")
+
+// ----------------------------
+// CÁLCULO ZERO-LAG EMA
+// ----------------------------
+
+src = close
+
+// Lag matemático para corrección Zero-Lag
+lag = math.floor((zlLength - 1) / 2)
+
+// Fórmula Zero-Lag EMA
+zlema = ta.ema(src + (src - src[lag]), zlLength)
+
+// Volatilidad basada en ATR máximo
+volatility = ta.highest(ta.atr(zlLength), zlLength * 3) * zlMult
+
+// ----------------------------
+// DETECCIÓN DE TENDENCIA
+// ----------------------------
+
+// Variable persistente de tendencia
+var int zlTrend = 0
+
+// Cambio a tendencia alcista
+if ta.crossover(close, zlema + volatility)
+    zlTrend := 1
+
+// Cambio a tendencia bajista
+if ta.crossunder(close, zlema - volatility)
+    zlTrend := -1
+
+// Señales limpias (solo cuando cambia la tendencia)
+bullishSignal = zlTrend == 1 and zlTrend[1] != 1
+bearishSignal = zlTrend == -1 and zlTrend[1] != -1
+
+// ----------------------------
+// PLOTS ZERO LAG
+// ----------------------------
+
+// Línea base Zero-Lag
+plotZL = plot(
+    showZL ? zlema : na,
+    "Zero Lag Basis",
+    linewidth=2,
+    color=(zlTrend == 1 ? color.new(bullColor, 30) : color.new(bearColor, 30))
+)
+
+// Banda superior (solo en tendencia bajista)
+plotUpper = plot(
+    showZL and zlTrend == -1 ? (zlema + volatility) : na,
+    "ZL Upper",
+    style=plot.style_line,
+    color=color.new(bearColor, 80)
+)
+
+// Banda inferior (solo en tendencia alcista)
+plotLower = plot(
+    showZL and zlTrend == 1 ? (zlema - volatility) : na,
+    "ZL Lower",
+    style=plot.style_line,
+    color=color.new(bullColor, 80)
+)
+
+// Rellenos visuales
+fill(plotZL, plotUpper, color=color.new(bearColor, 90))
+fill(plotZL, plotLower, color=color.new(bullColor, 90))
+
+// ----------------------------
+// SEÑALES VISUALES
+// ----------------------------
+
+// Señal de compra
+plotshape(
+    bullishSignal,
+    title="BUY",
+    style=shape.triangleup,
+    location=location.belowbar,
+    color=bullColor,
+    size=size.large,
+    text="COMPRAR"
+)
+
+// Señal de venta
+plotshape(
+    bearishSignal,
+    title="SELL",
+    style=shape.triangledown,
+    location=location.abovebar,
+    color=bearColor,
+    size=size.large,
+    text="VENDER"
+)
+
+// ----------------------------
+// ÓRDENES DE ESTRATEGIA
+// ----------------------------
+
+// Entrada LONG
+if bullishSignal
+    strategy.entry("Long", strategy.long)
+
+// Entrada SHORT
+if bearishSignal
+    strategy.entry("Short", strategy.short)
+
+// ----------------------------
+// ALERTAS
+// ----------------------------
+
+alertcondition(bullishSignal, "🟢 SEÑAL DE COMPRA", "Zero Lag: Señal de compra")
+alertcondition(bearishSignal, "🔴 SEÑAL DE VENTA", "Zero Lag: Señal de venta")
+alertcondition(bullishSignal or bearishSignal, "⚡ NUEVA SEÑAL", "Nueva señal de trading generada")
+
+// ======================================================
+// 4 EMAs CONFIGURABLES
+// ======================================================
+
+// ----------------------------
+// EMA 1
+// ----------------------------
+enable1 = input.bool(true, "Enable EMA 1", group="4 EMAs / EMA 1")
+len1 = input.int(9, minval=1, title="Length EMA 1", group="4 EMAs / EMA 1")
+src1 = input.source(close, title="Source EMA 1", group="4 EMAs / EMA 1")
+color1 = input.color(color.blue, "Color EMA 1", group="4 EMAs / EMA 1")
+offset1 = input.int("Offset EMA 1", 0, -500, 500, group="4 EMAs / EMA 1")
+out1 = ta.ema(src1, len1)
+plot(enable1 ? out1 : na, "EMA 1", color=color1, offset=offset1, linewidth=2)
+
+// ----------------------------
+// EMA 2
+// ----------------------------
+enable2 = input.bool(true, "Enable EMA 2", group="4 EMAs / EMA 2")
+len2 = input.int(21, minval=1, title="Length EMA 2", group="4 EMAs / EMA 2")
+src2 = input.source(close, title="Source EMA 2", group="4 EMAs / EMA 2")
+color2 = input.color(color.red, "Color EMA 2", group="4 EMAs / EMA 2")
+offset2 = input.int("Offset EMA 2", 0, -500, 500, group="4 EMAs / EMA 2")
+out2 = ta.ema(src2, len2)
+plot(enable2 ? out2 : na, "EMA 2", color=color2, offset=offset2, linewidth=2)
+
+// ----------------------------
+// EMA 3
+// ----------------------------
+enable3 = input.bool(true, "Enable EMA 3", group="4 EMAs / EMA 3")
+len3 = input.int(50, minval=1, title="Length EMA 3", group="4 EMAs / EMA 3")
+src3 = input.source(close, title="Source EMA 3", group="4 EMAs / EMA 3")
+color3 = input.color(color.green, "Color EMA 3", group="4 EMAs / EMA 3")
+offset3 = input.int("Offset EMA 3", 0, -500, 500, group="4 EMAs / EMA 3")
+out3 = ta.ema(src3, len3)
+plot(enable3 ? out3 : na, "EMA 3", color=color3, offset=offset3, linewidth=2)
+
+// ----------------------------
+// EMA 4
+// ----------------------------
+enable4 = input.bool(true, "Enable EMA 4", group="4 EMAs / EMA 4")
+len4 = input.int(200, minval=1, title="Length EMA 4", group="4 EMAs / EMA 4")
+src4 = input.source(close, title="Source EMA 4", group="4 EMAs / EMA 4")
+color4 = input.color(color.orange, "Color EMA 4", group="4 EMAs / EMA 4")
+offset4 = input.int("Offset EMA 4", 0, -500, 500, group="4 EMAs / EMA 4")
+out4 = ta.ema(src4, len4)
+plot(enable4 ? out4 : na, "EMA 4", color=color4, offset=offset4, linewidth=2)
