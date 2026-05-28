@@ -5,96 +5,56 @@
 <img width="1260" height="857" alt="image" src="https://github.com/user-attachments/assets/6eaba7fd-4e11-447e-ad7d-677b31a086db" />
 
 
-# 📈 BullBearV5 — Zero-Lag Trend Indicator & Strategy
+# 📈 BullBearV5
 
-**BullBearV5** es un indicador/estrategia de trading basada en **Zero-Lag EMA con bandas dinámicas de volatilidad**, diseñado para identificar **cambios claros de tendencia**, reducir el lag tradicional de las EMAs y generar **señales limpias de compra y venta**.
-Incluye **presets optimizados**, **alertas**, y **4 EMAs configurables** para análisis multi-tendencia.
+BullBearV5 es un indicador y estrategia para TradingView diseñado para detectar tendencias de forma más limpia y rápida usando una Zero-Lag EMA y bandas dinámicas de volatilidad.
 
----
+El objetivo del script es ayudar a identificar posibles cambios de tendencia reduciendo el retraso típico de las EMAs tradicionales y filtrando movimientos con baja confirmación.
 
-## 🚀 Características Principales
+## ¿Qué incluye?
 
-* ✅ **Zero-Lag EMA (ZLEMA)** para reducir retraso en señales
-* ✅ **Bandas de volatilidad adaptativas** basadas en ATR
-* ✅ **Detección automática de tendencia** (Bull / Bear)
-* ✅ **Señales BUY / SELL no repetitivas**
-* ✅ **Presets preconfigurados** por activo y temporalidad
-* ✅ **4 EMAs totalmente configurables**
-* ✅ **Compatible con alertas de TradingView**
-* ✅ **Funciona como indicador o estrategia**
+* Zero-Lag EMA para reaccionar más rápido al precio
+* Bandas dinámicas basadas en volatilidad
+* Señales BUY y SELL cuando cambia la tendencia
+* 4 EMAs configurables
+* Alertas compatibles con TradingView
+* Presets optimizados para distintos activos y temporalidades
+* Uso como indicador o estrategia
 
----
+## ¿Qué se puede hacer con BullBearV5?
 
-## ⚙️ Presets Incluidos
+* Detectar cambios de tendencia
+* Confirmar entradas y salidas
+* Hacer análisis intradía o swing trading
+* Utilizar EMAs como soporte/resistencia dinámica
+* Crear alertas para automatización o bots
+* Realizar backtesting dentro de TradingView
 
-El indicador permite seleccionar configuraciones optimizadas según el mercado:
+## Presets incluidos
 
-| Preset    | Timeframe | Zero Lag Length | Multiplier |
-| --------- | --------- | --------------- | ---------- |
-| Custom    | —         | Manual          | Manual     |
-| NVDA 15M  | 15 Min    | 14              | 1.25       |
-| EURUSD 4H | 4 Horas   | 27              | 0.7        |
+El script incluye configuraciones listas para usar:
 
-> El modo **Custom** permite modificar todos los parámetros manualmente.
+* NVDA 15M
+* EURUSD 4H
+* Modo Custom para ajustar parámetros manualmente
 
----
+## Cómo funciona
 
-## 📊 Lógica del Indicador
+BullBearV5 combina una Zero-Lag EMA con bandas de volatilidad adaptativas.
 
-### 1. Zero-Lag EMA
+Cuando el precio rompe ciertas zonas de volatilidad, el indicador interpreta un posible cambio de tendencia y genera señales visuales de compra o venta.
 
-Se utiliza una fórmula Zero-Lag para compensar el retraso clásico de las EMAs:
+Las señales solo aparecen cuando existe un cambio real de tendencia para evitar repeticiones innecesarias.
 
-* Reduce ruido
-* Reacciona más rápido a cambios de precio
-* Mantiene suavidad visual
+## EMAs configurables
 
-### 2. Bandas de Volatilidad
+Incluye 4 EMAs independientes totalmente configurables:
 
-Las bandas se calculan a partir del **ATR máximo** en una ventana ampliada:
-
-* Se expanden en alta volatilidad
-* Se contraen en consolidación
-* Filtran falsas rupturas
-
-### 3. Cambio de Tendencia
-
-* 📈 **Tendencia alcista**: el precio rompe la banda superior
-* 📉 **Tendencia bajista**: el precio rompe la banda inferior
-* Las señales solo aparecen **cuando la tendencia cambia**, evitando spam.
-
----
-
-## 🔔 Señales y Alertas
-
-### Señales Visuales
-
-* 🟢 **BUY**: Cambio confirmado a tendencia alcista
-* 🔴 **SELL**: Cambio confirmado a tendencia bajista
-
-### Alertas Disponibles
-
-* Señal de compra
-* Señal de venta
-* Cualquier nueva señal generada
-
-Compatible con:
-
-* Notificaciones móviles
-* Webhooks
-* Bots externos
-
----
-
-## 📐 4 EMAs Configurables
-
-Incluye **4 EMAs independientes**, cada una con:
-
-* Activación individual
-* Longitud configurable
+* Longitud
 * Fuente de precio
-* Color personalizado
+* Color
 * Offset visual
+* Activación individual
 
 Valores por defecto:
 
@@ -103,57 +63,18 @@ Valores por defecto:
 * EMA 50
 * EMA 200
 
-Ideal para:
+## Compatibilidad
 
-* Confirmación de tendencia
-* Soportes y resistencias dinámicas
-* Análisis institucional
+* TradingView
+* Pine Script v6
+* Forex
+* Crypto
+* Stocks
+* Índices
 
----
+## Disclaimer
 
-## 🧠 Casos de Uso
-
-* Scalping (con presets o ajustes cortos)
-* Intraday
-* Swing trading
-* Confirmación de tendencia
-* Backtesting de estrategias
-* Automatización con alertas
-
----
-
-## 🛠️ Requisitos
-
-* Plataforma: **TradingView**
-* Lenguaje: **Pine Script v6**
-* Mercado: Cualquiera (Forex, Crypto, Stocks, Índices)
-
----
-
-## ⚠️ Disclaimer
-
-Este indicador **no garantiza resultados** y **no constituye asesoría financiera**.
-Úsalo como herramienta de apoyo junto con:
-
-* Gestión de riesgo
-* Confirmaciones adicionales
-* Contexto del mercado
-
----
-
-## 📌 Roadmap (Opcional)
-
-* [ ] Stop Loss / Take Profit automáticos
-* [ ] Filtro de sesión (London / NY)
-* [ ] Confirmación multi-timeframe
-* [ ] Dashboard estadístico
-
----
-
-## 📄 Licencia
-
-Uso libre para fines educativos y personales.
-Si lo publicas o modificas, se agradece la atribución.
+Este script no garantiza resultados y no constituye asesoría financiera. Debe utilizarse junto con gestión de riesgo y análisis adicional.
 
 ---
 
