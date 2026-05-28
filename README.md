@@ -5,7 +5,10 @@
 <img width="1260" height="857" alt="image" src="https://github.com/user-attachments/assets/6eaba7fd-4e11-447e-ad7d-677b31a086db" />
 
 
-# 📈 BullBearV5
+# 📈 BullBearV1
+# NUEVO ENLACE: https://es.tradingview.com/script/NPl7cGbU/
+
+No se actualizó en el codigo, sigue siendo el mismo BullBearV5 publicado el otro año. Se resuvió la publicación en tradingview
 
 BullBearV5 es un indicador y estrategia para TradingView diseñado para detectar tendencias de forma más limpia y rápida usando una Zero-Lag EMA y bandas dinámicas de volatilidad.
 
