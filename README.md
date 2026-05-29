@@ -8,7 +8,7 @@
 # 📈 BullBearV1
 # NUEVO ENLACE: https://es.tradingview.com/script/NPl7cGbU/
 Sigue siendo el mismo que se publicó en reddit.
-<img width="800" height="1254" alt="image" src="https://github.com/user-attachments/assets/0b31fce4-ac51-42fc-8be4-f49279b01bf4" />
+<img width="800" height="800" alt="image" src="https://github.com/user-attachments/assets/0b31fce4-ac51-42fc-8be4-f49279b01bf4" />
 
 No se actualizó en el codigo, sigue siendo el mismo BullBearV5 publicado el otro año. Se resuvió la publicación en tradingview
 
